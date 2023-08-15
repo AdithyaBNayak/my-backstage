@@ -19,6 +19,12 @@ export async function createRouter(
     logger.info('PONG!');
     response.json({ status: 'ok' });
   });
+
+  router.get('/hello', (_, response) => {
+    logger.info('GET Hello Request');
+    response.json({ status: 'world' });
+  });
+
   router.use(errorHandler());
   return router;
 }
