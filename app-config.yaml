@@ -65,6 +65,10 @@ githubCodeResource:
   testA: responseA
   testB: responseB
 
+testingAction:
+  testing: AdithyaBNayak
+
+
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
   providers: {}
