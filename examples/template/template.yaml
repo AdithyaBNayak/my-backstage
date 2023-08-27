@@ -64,14 +64,34 @@ spec:
     - id: jenkinsFolder
       name: create jenkins folder
       action: jenkins:folder:create
+      input:
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        folder: ${{ parameters.folder }}
+        job: ${{ parameters.job }}
 
     - id: jenkinsJob
       name: create jenkins Job
       action: jenkins:job:create
+      input:
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        folder: ${{ parameters.folder }}
+        job: ${{ parameters.job }}
+
 
     - id: jenkinsRun
       name: Run Jenkins Job
-      action: jenkins:job:run      
+      action: jenkins:job:run
+      input:
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        folder: ${{ parameters.folder }}
+        job: ${{ parameters.job }}
+      
 
     # This step publishes the contents of the working directory to GitHub.
     - id: publish

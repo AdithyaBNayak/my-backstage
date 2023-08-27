@@ -15,35 +15,60 @@ import { Config } from '@backstage/config';
   }) => { 
     const { config } = options;
     return createTemplateAction<{
-      component_id: string;
-      description?: string;
-      destination?: string;
-      owner?: string;
+      repoUrl?: string;
+      folder?: string;
+      job?: string;
     }>({
       id: 'jenkins:job:run',
       description: 'Create a new action just for test',
+      schema: {
+        input: {
+          properties: {
+            
+            repoUrl: {
+              type: 'string',
+              title: 'GitHub Repo Url',
+              description:
+                'mkdocs.yml file location inside the github repo you want to store the document',
+            },
+            folder: {
+                type: 'string',
+                title: 'Jenkins Folder',
+                description:
+                  'Its a Jenkins Folder',
+              },
+            job: {
+                type: 'string',
+                title: 'JenkinsJob',
+                description:
+                  'Its a Jenkins',
+            },  
+          },
+        },
+      },
       async handler(ctx) {
         console.log("------------------Running the job----------------");
+        
         const password  = config.getOptionalString("jenkins.token");
         if (!password ) {
-          console.error("Test Action Errorred out, no Jenkins token Present");
-          return
+          console.error("Test Action Errored out, no Jenkins token Present");
+          throw Error("Jenkins password not provided"); 
         }
         
         const username  = config.getOptionalString("jenkins.username");
         if (!username ) {
-          console.error("Test Action Errorred out, no Jenkins username Present");
-          return
+          console.error("Test Action Errored out, no Jenkins username Present");
+          throw Error("Jenkins username not provided"); 
         }
 
         const jenkinsBaseUrl  = config.getOptionalString("jenkins.host");
         if (!jenkinsBaseUrl ) {
-          console.error("Test Action Errorred out, no Jenkins username Present");
-          return
+          console.error("Test Action Errored out, no Jenkins username Present");
+          throw Error("Jenkins URL not provided"); 
         }
 
-        const folderName = 'MyNewFolder';
-        const jobName = 'MyNewJob';
+        const folderName = ctx.input.folder || 'MyNewFolder';
+        const jobName = ctx.input.job || 'MyNewJob';
 
         try {
             // Set up basic authentication headers
