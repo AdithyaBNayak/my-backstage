@@ -5,6 +5,9 @@ import type { PluginEnvironment } from '../types';
 import { createFetchCustomTestAction, createAcmeExampleAction } from 'backstage-plugin-scaffolder-backend-module-notify-slack';
 import { createBuiltinActions } from '@backstage/plugin-scaffolder-backend';
 import { ScmIntegrations } from '@backstage/integration';
+import { jenkinsCreateFolderAction } from './scaffolder/actions/jenkins-create-folder';
+import { jenkinsCreateJobAction } from './scaffolder/actions/jenkins-create-job';
+import { jenkinsRunJobAction } from './scaffolder/actions/jenkins-run-job';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -21,7 +24,14 @@ export default async function createPlugin(
     reader: env.reader,
   });
 
-  const actions = [...builtInActions, createFetchCustomTestAction(), createAcmeExampleAction()];
+  const actions = [...builtInActions, 
+    createFetchCustomTestAction(), 
+    createAcmeExampleAction(), 
+    jenkinsCreateFolderAction(),
+    jenkinsCreateJobAction(),
+    jenkinsRunJobAction()
+
+  ];
 
   return await createRouter({
     actions,
