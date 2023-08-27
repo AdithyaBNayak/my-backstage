@@ -2,7 +2,7 @@ import {
     createTemplateAction
   } from '@backstage/plugin-scaffolder-node';
   
-  import fetch from 'node-fetch';
+import axios from 'axios';
   // import  { Config } from '@backstage/config';
   
   /** 
@@ -20,21 +20,39 @@ import {
       id: 'jenkins:job:run',
       description: 'Create a new action just for test',
       async handler(ctx) {
-        // const configValue  = config.getOptionalString("integrations.testingAction.testing");
-        // if (!configValue ) {
-        //   console.error("Test Action Errorred out, no ConfigValue Present");
-        //   return;
-        // }
-  
-        const message = `Hi There this is new Custom action with id ${ctx.input.component_id} 
-        has been created by ${ctx.input.owner}
-        at the location ${ctx.input.destination}, \n
-        configValue = `;
-   
-        
-        console.log('Hoi, This is custom action created by Adithya B!!! ');
-  
-  
-      },
-    });
-  };
+        console.log("------------------Running the job----------------");
+        const jenkinsBaseUrl = 'http://localhost:8080/';
+        const username = 'admin';
+        const password = 'xyz'; // Use API token or password for authentication
+
+        const folderName = 'MyNewFolder';
+        const jobName = 'MyNewJob';
+
+        try {
+            // Set up basic authentication headers
+            const auth = {
+              username,
+              password,
+            };
+
+
+        // Trigger the existing Jenkins job
+        const triggerResponse = await axios.post(
+          `${jenkinsBaseUrl}/job/${encodeURIComponent(folderName)}/job/${encodeURIComponent(
+            jobName
+          )}/build`,
+          null,
+          { auth }
+        );
+
+        if (triggerResponse.status === 201) {
+          console.log(`Job "${jobName}" triggered successfully.`);
+        } else {
+          console.error('Failed to trigger job:', triggerResponse.data);
+        }
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    },
+  });
+};

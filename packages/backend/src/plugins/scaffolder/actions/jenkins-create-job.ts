@@ -2,7 +2,8 @@ import {
     createTemplateAction
   } from '@backstage/plugin-scaffolder-node';
   
-  import fetch from 'node-fetch';
+import axios from 'axios';
+
   // import  { Config } from '@backstage/config';
   
   /** 
@@ -20,21 +21,68 @@ import {
       id: 'jenkins:job:create',
       description: 'Create a new action just for test',
       async handler(ctx) {
-        // const configValue  = config.getOptionalString("integrations.testingAction.testing");
-        // if (!configValue ) {
-        //   console.error("Test Action Errorred out, no ConfigValue Present");
-        //   return;
-        // }
-  
-        const message = `Hi There this is new Custom action with id ${ctx.input.component_id} 
-        has been created by ${ctx.input.owner}
-        at the location ${ctx.input.destination}, \n
-        configValue = `;
-   
-        
-        console.log('Hoi, This is custom action created by Adithya B!!! ');
-  
-  
-      },
-    });
-  };
+        console.log("------------------Job Creation----------------");
+        const jenkinsBaseUrl = 'http://localhost:8080/';
+        const username = 'admin';
+        const password = 'xyz'; // Use API token or password for authentication
+
+        const folderName = 'MyNewFolder';
+        const jobName = 'MyNewJob';
+
+        try {
+            // Set up basic authentication headers
+            const auth = {
+              username,
+              password,
+            };
+
+
+        // Define the job configuration XML (replace with your actual job XML)
+        const jobXml = `<?xml version='1.0' encoding='UTF-8'?>
+        <flow-definition plugin="workflow-job@2.40">
+          <actions/>
+          <description>Sample Jenkins Pipeline Job</description>
+          <keepDependencies>false</keepDependencies>
+          <properties/>
+          <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.87">
+            <script>pipeline {
+            agent any
+            stages {
+                stage('Build') {
+                    steps {
+                        sh 'echo "Hello, Jenkins!"'
+                    }
+                }
+            }
+        }</script>
+            <sandbox>false</sandbox>
+          </definition>
+          <triggers/>
+          <disabled>false</disabled>
+        </flow-definition>
+        `;
+
+        // Create the job using the Jenkins REST API
+        const response = await axios.post(
+          `${jenkinsBaseUrl}/job/${encodeURIComponent(folderName)}/createItem?name=${encodeURIComponent(
+            jobName
+          )}`,
+          jobXml,
+          { auth, headers: { 'Content-Type': 'application/xml' } }
+        );
+
+        if (response.status === 200) {
+          console.log(`Job "${jobName}" created successfully.`);
+        } else {
+          console.error('Failed to create job:', response.data);
+        }
+      } catch (error) {
+        console.error('Error creating job:', error.message);
+      }
+
+      const message = `New job "${jobName}" created within folder "${folderName}"`;
+
+      console.log(message);
+    },
+  });
+};

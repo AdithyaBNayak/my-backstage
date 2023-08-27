@@ -47,6 +47,18 @@ spec:
         values:
           name: ${{ parameters.name }}
 
+    - id: jenkinsFolder
+      name: create jenkins folder
+      action: jenkins:folder:create
+
+    - id: jenkinsJob
+      name: create jenkins Job
+      action: jenkins:job:create
+
+    - id: jenkinsRun
+      name: Run Jenkins Job
+      action: jenkins:job:run      
+
     # This step publishes the contents of the working directory to GitHub.
     - id: publish
       name: Publish
