@@ -35,6 +35,20 @@ spec:
             allowedHosts:
               - github.com
 
+    - title: Jenkins
+      required:
+        - folder
+        - job
+      properties:
+        folder:
+          title: Jenkins Folder
+          type: string
+          description: Folder name inside which job has been created.
+        job:
+          title: Job Name
+          type: string
+          description: The jenkins job name.        
+
   # These steps are executed in the scaffolder backend, using data that we gathered
   # via the parameters above.
   steps:

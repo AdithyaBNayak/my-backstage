@@ -27,9 +27,9 @@ export default async function createPlugin(
   const actions = [...builtInActions, 
     createFetchCustomTestAction(), 
     createAcmeExampleAction(), 
-    jenkinsCreateFolderAction(),
-    jenkinsCreateJobAction(),
-    jenkinsRunJobAction()
+    jenkinsCreateFolderAction({config: env.config}),
+    jenkinsCreateJobAction({config: env.config}),
+    jenkinsRunJobAction({config: env.config})
 
   ];
 

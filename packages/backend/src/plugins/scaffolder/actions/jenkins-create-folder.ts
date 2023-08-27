@@ -3,13 +3,17 @@ import {
   } from '@backstage/plugin-scaffolder-node';
   
 import axios from 'axios';
+import { Config } from '@backstage/config';
   
   /** 
    *  Create a new action just for test
    * @public
    */
   
-  export  const jenkinsCreateFolderAction = () => { //{ config }: {config: Config}
+  export  const jenkinsCreateFolderAction = (options: {
+    config: Config;
+  }) => { 
+    const { config } = options;
     return createTemplateAction<{
       component_id: string;
       description?: string;
@@ -20,9 +24,23 @@ import axios from 'axios';
       description: 'Create a new action just for test',
       async handler(ctx) {
         console.log("------------------Folder Creation----------------");
-        const jenkinsBaseUrl = 'http://localhost:8080/';
-        const username = 'admin';
-        const password = 'xyz'; // Use API token or password for authentication
+        const password  = config.getOptionalString("jenkins.token");
+        if (!password ) {
+          console.error("Test Action Errorred out, no Jenkins token Present");
+          return
+        }
+
+        const username  = config.getOptionalString("jenkins.username");
+        if (!username ) {
+          console.error("Test Action Errorred out, no Jenkins username Present");
+          return
+        }
+
+        const jenkinsBaseUrl  = config.getOptionalString("jenkins.host");
+        if (!jenkinsBaseUrl ) {
+          console.error("Test Action Errorred out, no Jenkins username Present");
+          return
+        }
 
         const folderName = 'MyNewFolder';
 
