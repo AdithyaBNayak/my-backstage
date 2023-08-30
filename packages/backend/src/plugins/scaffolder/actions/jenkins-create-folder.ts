@@ -49,19 +49,19 @@ import { Config } from '@backstage/config';
       async handler(ctx) {
         console.log("------------------Folder Creation----------------");
         
-        const password  = config.getOptionalString("jenkins.token");
+        const password  = config.getOptionalString("jenkinsAction.token");
         if (!password ) {
           console.error("Test Action Errored out, no Jenkins token Present");
           throw Error("No Token Provided");
         }
 
-        const username  = config.getOptionalString("jenkins.username");
+        const username  = config.getOptionalString("jenkinsAction.username");
         if (!username ) {
           console.error("Test Action Errored out, no Jenkins username Present");
           throw Error("No Username Provided");
         }
 
-        const jenkinsBaseUrl  = config.getOptionalString("jenkins.host");
+        const jenkinsBaseUrl  = config.getOptionalString("jenkinsAction.host");
         if (!jenkinsBaseUrl ) {
           console.error("Test Action Errored out, no Jenkins username Present");
           throw Error("No Jenkins Host URL Provided");

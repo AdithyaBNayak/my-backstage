@@ -65,7 +65,7 @@ githubCodeResource:
   testA: responseA
   testB: responseB
 
-jenkins:
+jenkinsAction:
   token: ${JENKINS_TOKEN}
   host: http://localhost:8080/
   username: admin
