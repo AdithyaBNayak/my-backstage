@@ -70,7 +70,7 @@ import { Config } from '@backstage/config';
           throw Error("Jenkins URL not provided");  
         }
 
-        const folderName = ctx.input.folder || 'MyNewFolder';
+        const folderName = ctx.input.folder || 'custom-actions';
         const jobName = ctx.input.job || 'MyNewJob';
 
         try {

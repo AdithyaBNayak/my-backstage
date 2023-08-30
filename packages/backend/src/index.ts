@@ -29,6 +29,7 @@ import proxy from './plugins/proxy';
 import techdocs from './plugins/techdocs';
 import search from './plugins/search';
 import githubCodeResource from './plugins/githubCodeResource'; // Basically imported createRouter from githubCodeResource.ts
+import jenkinsData from './plugins/jenkins-data';
 import { PluginEnvironment } from './types';
 import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
@@ -87,6 +88,7 @@ async function main() {
   const searchEnv = useHotMemoize(module, () => createEnv('search'));
   const appEnv = useHotMemoize(module, () => createEnv('app'));
   const githubCodeResourceEnv = useHotMemoize(module, () => createEnv('github-code-resource')); //should be unique
+  const jenkinsDataEnv = useHotMemoize(module, () => createEnv('jenkins-data'));
 
   const apiRouter = Router();
   apiRouter.use('/catalog', await catalog(catalogEnv));
@@ -96,7 +98,8 @@ async function main() {
   apiRouter.use('/proxy', await proxy(proxyEnv));
   apiRouter.use('/search', await search(searchEnv));
   apiRouter.use('/github-code-resource', await githubCodeResource(githubCodeResourceEnv)); // Provided Env argument to createRouter
-
+  apiRouter.use('/jenkins-data', await githubCodeResource(jenkinsDataEnv));
+  
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback
   apiRouter.use(notFoundHandler());
 
