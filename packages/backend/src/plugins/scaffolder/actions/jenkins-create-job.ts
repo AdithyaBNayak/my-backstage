@@ -50,6 +50,8 @@ import { Config } from '@backstage/config';
       },
       async handler(ctx) {
         console.log("------------------Job Creation----------------");
+        console.log(ctx.input.repoUrl)
+
         const password  = config.getOptionalString("jenkinsAction.token");
         if (!password ) {
           console.error("Test Action Errored out, no Jenkins token Present");
@@ -81,28 +83,63 @@ import { Config } from '@backstage/config';
 
         // Define the job configuration XML (replace with your actual job XML)
         const jobXml = `<?xml version='1.0' encoding='UTF-8'?>
-        <flow-definition plugin="workflow-job@2.40">
-          <actions/>
-          <description>Sample Jenkins Pipeline Job</description>
-          <keepDependencies>false</keepDependencies>
-          <properties/>
-          <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.87">
-            <script>pipeline {
-            agent any
-            stages {
-                stage('Build') {
-                    steps {
-                        sh 'echo "Hello, Jenkins!"'
-                    }
-                }
-            }
-        }</script>
-            <sandbox>false</sandbox>
-          </definition>
-          <triggers/>
-          <disabled>false</disabled>
-        </flow-definition>
-        `;
+        <project>
+          <description>Sample Jenkins Freestyle Project</description>
+          <properties>
+            <com.coravy.hudson.plugins.github.GithubProjectProperty>
+                <projectUrl>https://github.com/ItRachii/Spring-Boot-E-Commerce</projectUrl>
+            </com.coravy.hudson.plugins.github.GithubProjectProperty>
+          </properties>
+          
+          <!-- Git SCM Configuration -->
+        <scm class="hudson.plugins.git.GitSCM">
+            <configVersion>2</configVersion>
+            <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <url>https://github.com/ItRachii/Spring-Boot-E-Commerce.git</url>
+            </hudson.plugins.git.UserRemoteConfig>
+            </userRemoteConfigs>
+            <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>*/main</name>
+            </hudson.plugins.git.BranchSpec>
+            </branches>
+            <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+            <submoduleCfg/>
+            <extensions/>
+        </scm>
+
+        <!-- Build Trigger with GitHub Hook Trigger -->
+        <triggers>
+            <com.cloudbees.jenkins.GitHubPushTrigger>
+            <spec></spec> <!-- You can specify specific branches, or leave empty for all -->
+            </com.cloudbees.jenkins.GitHubPushTrigger>
+        </triggers>
+
+
+          <builders>
+            <hudson.tasks.Shell>
+              <command>
+                #!/bin/bash
+                
+                # Navigate to your project directory
+                pwd
+                
+                # Initialize Terraform
+                terraform init
+                
+                # Plan the changes
+                terraform plan
+                
+                # Apply the changes
+                terraform apply -auto-approve
+              </command>
+            </hudson.tasks.Shell>
+          </builders>
+        </project>`;  
+        
+        
+        
         
         // Create the job using the Jenkins REST API
         const response = await axios.post(
@@ -117,11 +154,11 @@ import { Config } from '@backstage/config';
           console.log(`Job "${jobName}" created successfully.`);
         } else {
           console.error('Failed to create job:', response.data);
-          throw Error("Jenkins Folder not created"); 
+          throw Error("Jenkins Job  not created - Else statement"); 
         }
       } catch (error) {
         console.error('Error creating job:', error.message);
-        throw Error("Jenkins Folder not created"); 
+        throw Error("Jenkins Job not created - catch statement"); 
       }
 
       const message = `New job "${jobName}" created within folder "${folderName}"`;
