@@ -90,14 +90,16 @@ export async function createRouter(
           throw Error("Jenkins URL not provided");  
         }
     
-    const output = getJenkinsJobStatus(jenkinsBaseUrl, username, password, folderName, jobName)
+    getJenkinsJobStatus(jenkinsBaseUrl, username, password, folderName, jobName)
       .then(status => {
-        console.log(`Job "${jobName}" status: ${status}`);
+        console.log(`Job "${jobName}" status: ${JSON.stringify(status)} `);
+        response.json({ response: status });
       })
       .catch(error => {
         console.error('Error:', error);
+        response.json({ response: "Error!" });
       });
-    response.json({ response: output });
+    
   });
 
 

@@ -98,7 +98,7 @@ async function main() {
   apiRouter.use('/proxy', await proxy(proxyEnv));
   apiRouter.use('/search', await search(searchEnv));
   apiRouter.use('/github-code-resource', await githubCodeResource(githubCodeResourceEnv)); // Provided Env argument to createRouter
-  apiRouter.use('/jenkins-data', await githubCodeResource(jenkinsDataEnv));
+  apiRouter.use('/jenkins-data', await jenkinsData(jenkinsDataEnv));
   
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback
   apiRouter.use(notFoundHandler());
